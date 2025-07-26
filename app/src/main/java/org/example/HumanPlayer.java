@@ -20,17 +20,14 @@ public class HumanPlayer implements Player {
     public int chooseMove(Board board) {
         while (true) {
             System.out.print("Player " + symbol + ", enter your move (1-9): ");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
             try {
                 int move = Integer.parseInt(input);
                 if (board.isValidMove(move)) {
                     return move;
-                } else {
-                    System.out.println("Invalid move! Try again.");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Try again.");
-            }
+            } catch (NumberFormatException ignored) {}
+            System.out.println("Invalid move. Please try again.");
         }
     }
 }
