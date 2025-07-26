@@ -1,31 +1,67 @@
-# Tic-Tac-Toe (Java)
+# Tic-Tac-Toe Console Game (Java)
 
-You can find the instructions for this lab [here](https://morethanequations.com/Computer-Science/Portfolio-Projects/Tic-Tac-Toe). Create a new repository on GitHub to house your code. Be sure to make the repository public so that I can view and grade it.
+This project implements a human versus human Tic-Tac-Toe game played in the console with a 3x3 grid numbered 1 to 9. Player 1 uses “X” and Player 2 uses “O”.
 
-We will use [Gradle](https://gradle.org/) to automate common development tasks.
+To set up, clone the repository with git clone https://github.com/judith-java2/Portfolio.git then run ./gradlew build to compile and ./gradlew run to start the game.
 
-## Building the App
+Players alternate turns entering the number corresponding to their move; the program validates input to reject invalid, occupied, or out-of-range entries without crashing.
 
-You can build the app using:
+The game detects wins (rows, columns, diagonals) and draws, announces results, and prompts to play again.
 
-```bash
-./gradlew build
+Unit tests written with JUnit 5 cover initial board setup, win conditions, draw detection, and input validation. Run tests via ./gradlew test; reports are generated at build/reports/tests/test/index.html.
+
+Reviewers should confirm that the game runs correctly from the console, enforces rules, handles invalid input gracefully, declares outcomes properly, and offers replay.
+
+The code uses a single class (TicTacToe.java) focusing on MVP design with clear separation of concerns planned for future iterations.
+
+```mermaid
+classDiagram
+    class TicTacToe {
+        - board : String array
+        - scanner : Scanner
+        + main(args : String array) : void
+        + resetBoard() : void
+        + printBoard() : void
+        + playGame() : void
+        + getValidMove() : int
+        + isWinner(player : String) : boolean
+        + askPlayAgain() : boolean
+        + getBoard() : String array
+        + setBoard(newBoard : String array) : void
+    }
 ```
 
-## Testing the App
 
-You can run the automated suite of tests using:
 
-```bash
-./gradlew test
+```mermaid
+sequenceDiagram
+    participant User
+    participant Main
+    participant GameLoop
+    participant Input
+    participant BoardLogic
+
+    User->>Main: Start program (main)
+    Main->>GameLoop: playGame()
+
+    loop Until game ends
+        GameLoop->>Input: getValidMove()
+        Input->>User: Prompt for move
+        User-->>Input: Enter move
+        Input->>Input: Validate move
+        Input->>GameLoop: Return valid move
+
+        GameLoop->>BoardLogic: Update board
+        GameLoop->>BoardLogic: isWinner(currentPlayer)
+        BoardLogic-->>GameLoop: Return true/false
+
+        alt Player wins
+            GameLoop->>User: Announce winner
+        else Draw
+            GameLoop->>User: Announce draw
+        else Continue
+            GameLoop->>GameLoop: Switch player
+        end
+    end
+    GameLoop->>User: Ask to play again
 ```
-
-## Running the App
-
-You can run the app using:
-
-```bash
-./gradlew run --quiet --console=plain
-```
-
-The two flags passed to the `run` command hide the noisy output from Gradle. You can see the details from Gradle by omitting those flags.
